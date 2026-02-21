@@ -11,16 +11,37 @@ from sklearn.metrics import auc
 import os
 import helpers as h
 
-# ====== GLOBAL SETTINGS ======
+#GLOBAL SETTINGS
 nb_it = 500
 bandwidth = 0.01
 # With 100 points in x from 0..1, 44:56 ~ 0.44..0.56
 AUC_XMIN = 44
 AUC_XMAX = 56
 
+#set intervaks as global variables
+interval13_left = int(1/4.25 * 100)
+interval13_right = int(1/3.75 * 100)
+DIR_13 = int(0.25*100)
 
-def plot_clade_curves(x, real_curves, shuffled_curves, clade_name, save_path,
-                      auc_xmin=AUC_XMIN, auc_xmax=AUC_XMAX):
+interval12_left = int(1/3.25 * 100)
+interval12_right = int(1/2.75 * 100)
+DIR_12 = int(0.33*100)
+
+interval11_left = int(0.44 * 100)
+interval11_right = int(0.56 * 100)
+DIR_11 = int(0.5 * 100)
+
+interval21_left = int((1-1/2.75)*100)
+interval21_right = int((1-1/3.25)*100)
+DIR_21 = int(0.66 * 100)
+
+interval31_left = int((1-1/3.75)*100)
+interval31_right = int((1-1/4.25)*100)
+DIR_31 = int(0.75 * 100)
+
+
+
+def plot_clade_curves(x, real_curves, shuffled_curves, clade_name, save_path):
     """
     Plot per-clade real, shuffled, and diff curves, plus mean curves.
     Adds black dashed vertical lines at AUC bounds.
@@ -52,13 +73,36 @@ def plot_clade_curves(x, real_curves, shuffled_curves, clade_name, save_path,
         mean_diff = np.mean(np.vstack(diff_curves), axis=0)
         axs[2].plot(x, mean_diff, linewidth=2, color='k', label='mean')
 
-    # --- Add vertical lines at AUC boundaries (black, dashed)
+    # Add vertical lines at exact DIRs, add tick marks
     x_vals = x.squeeze()
-    left_idx = max(0, min(auc_xmin, len(x_vals) - 1))
-    right_idx = max(0, min(auc_xmax, len(x_vals) - 1))
+    #left_idx = max(0, min(auc_xmin, len(x_vals) - 1))
+    #right_idx = max(0, min(auc_xmax, len(x_vals) - 1))
     for ax in axs:
-        ax.axvline(x=float(x_vals[left_idx]), color="black", linestyle="--", linewidth=1)
-        ax.axvline(x=float(x_vals[right_idx]), color="black", linestyle="--", linewidth=1)
+        #ax.axvline(x=float(x_vals[DIR_13]), color="black", linestyle="--", linewidth=1, label="1:3")
+        #ax.axvline(x=float(x_vals[DIR_12]), color="black", linestyle="--", linewidth=1, label="1:2")
+        #ax.axvline(x=float(x_vals[DIR_11]), color="black", linestyle="--", linewidth=1, label="1:1")
+        #ax.axvline(x=float(x_vals[DIR_21]), color="black", linestyle="--", linewidth=1, label="2:1")
+        #ax.axvline(x=float(x_vals[DIR_31]), color="black", linestyle="--", linewidth=1, label="3:1")
+        # ax.axvline(x=float(x_vals[interval13_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval13_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval12_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval12_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval11_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval11_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval21_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval21_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval31_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval31_right]), color="black", linestyle="--", linewidth=1)
+        ax.axvspan(x_vals[interval13_left], x_vals[interval13_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval12_left], x_vals[interval12_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval11_left], x_vals[interval11_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval21_left], x_vals[interval21_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval31_left], x_vals[interval31_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
 
     axs[0].set_title(f"{clade_name} - Real curves")
     axs[1].set_title(f"{clade_name} - Shuffled curves")
@@ -101,6 +145,8 @@ def plot_bird_auc_curves(syllable_csv):
     suboscine_real_curves, suboscine_shuffled_curves = [], []
     hummingbird_real_curves, hummingbird_shuffled_curves = [], []
     nightjar_real_curves, nightjar_shuffled_curves = [], []
+
+    all_birds_real_curves, all_birds_shuffled_curves = [], []
 
     # loop through species
     for species_id, species in df.groupby('species_birdtree'):
@@ -166,10 +212,14 @@ def plot_bird_auc_curves(syllable_csv):
         auc_real = np.sum(portion_real) / 100.0
         auc_shuffled = np.sum(portion_shuf) / 100.0
 
+
         # Normalize curves for plotting & diff
         real_curve = h.normalize_kde_one(real_curve_log, x)           # length 100
         mean_shuf_norm = mean_shuffled_curve                           # already normalized by helper
         diff_curve = real_curve - mean_shuf_norm
+
+        all_birds_real_curves.append(real_curve)
+        all_birds_shuffled_curves.append(mean_shuf_norm)
 
         # Grouping
         group_label = _canonical_group(species.iloc[0].get('our_grouping', 'Unknown'))
@@ -193,6 +243,14 @@ def plot_bird_auc_curves(syllable_csv):
     # Output plots per clade
     dirpath, _ = os.path.split(syllable_csv)
     x_flat = np.linspace(0, 1, 100).reshape(-1, 1)
+
+    plot_clade_curves(
+        x_flat,
+        all_birds_real_curves,
+        all_birds_shuffled_curves,
+        "All birds",
+        os.path.join(dirpath, 'dir_auc_plot_all_birds.png')
+    )
 
     plot_clade_curves(x_flat, oscine_real_curves,      oscine_shuffled_curves,      "Oscines",
                       os.path.join(dirpath, 'dir_auc_plot_oscines.png'))
@@ -315,8 +373,34 @@ def plot_music_auc_curves(syllable_csv, n_iter):
     left_idx = max(0, min(AUC_XMIN, len(x_vals) - 1))
     right_idx = max(0, min(AUC_XMAX, len(x_vals) - 1))
     for ax in axs:
-        ax.axvline(x=float(x_vals[left_idx]), color="black", linestyle="--", linewidth=1)
-        ax.axvline(x=float(x_vals[right_idx]), color="black", linestyle="--", linewidth=1)
+        print(DIR_13, DIR_12, DIR_11, DIR_21, DIR_31)
+        print(interval13_left, interval13_right, interval12_left, interval12_right, interval11_left, interval11_right,
+              interval21_left, interval21_right, interval31_left, interval31_right)
+        #ax.axvline(x=float(x_vals[DIR_13]), color="black", linewidth=1, label="1:3")
+        #ax.axvline(x=float(x_vals[DIR_12]), color="black", linewidth=1, label="1:2")
+        #ax.axvline(x=float(x_vals[DIR_11]), color="black", linewidth=1, label="1:1")
+        #ax.axvline(x=float(x_vals[DIR_21]), color="black", linewidth=1, label="2:1")
+        # #ax.axvline(x=float(x_vals[DIR_31]), color="black", linewidth=1, label="3:1")
+        # ax.axvline(x=float(x_vals[interval13_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval13_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval12_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval12_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval11_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval11_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval21_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval21_right]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval31_left]), color="black", linestyle="--", linewidth=1)
+        # ax.axvline(x=float(x_vals[interval31_right]), color="black", linestyle="--", linewidth=1)
+        ax.axvspan(x_vals[interval13_left], x_vals[interval13_right],
+                   facecolor = "0.2", alpha = 0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval12_left], x_vals[interval12_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0,zorder=0)
+        ax.axvspan(x_vals[interval11_left], x_vals[interval11_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval21_left], x_vals[interval21_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+        ax.axvspan(x_vals[interval31_left], x_vals[interval31_right],
+                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
 
     axs[0].set_title("Music Real curves")
     axs[1].set_title("Music Mean shuffled curves")
@@ -337,3 +421,4 @@ def plot_music_auc_curves(syllable_csv, n_iter):
     else:
         print("No AUCs to save for music.")
     plt.savefig(os.path.join(dirpath, 'music_dir_kde.png'), dpi=300)
+
