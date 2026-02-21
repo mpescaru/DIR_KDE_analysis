@@ -78,11 +78,11 @@ def plot_clade_curves(x, real_curves, shuffled_curves, clade_name, save_path):
     #left_idx = max(0, min(auc_xmin, len(x_vals) - 1))
     #right_idx = max(0, min(auc_xmax, len(x_vals) - 1))
     for ax in axs:
-        #ax.axvline(x=float(x_vals[DIR_13]), color="black", linestyle="--", linewidth=1, label="1:3")
-        #ax.axvline(x=float(x_vals[DIR_12]), color="black", linestyle="--", linewidth=1, label="1:2")
-        #ax.axvline(x=float(x_vals[DIR_11]), color="black", linestyle="--", linewidth=1, label="1:1")
-        #ax.axvline(x=float(x_vals[DIR_21]), color="black", linestyle="--", linewidth=1, label="2:1")
-        #ax.axvline(x=float(x_vals[DIR_31]), color="black", linestyle="--", linewidth=1, label="3:1")
+        ax.axvline(x=float(x_vals[DIR_13]), color="black", linestyle="--", linewidth=1, label="1:3")
+        ax.axvline(x=float(x_vals[DIR_12]), color="black", linestyle="--", linewidth=1, label="1:2")
+        ax.axvline(x=float(x_vals[DIR_11]), color="black", linestyle="--", linewidth=1, label="1:1")
+        ax.axvline(x=float(x_vals[DIR_21]), color="black", linestyle="--", linewidth=1, label="2:1")
+        ax.axvline(x=float(x_vals[DIR_31]), color="black", linestyle="--", linewidth=1, label="3:1")
         # ax.axvline(x=float(x_vals[interval13_left]), color="black", linestyle="--", linewidth=1)
         # ax.axvline(x=float(x_vals[interval13_right]), color="black", linestyle="--", linewidth=1)
         # ax.axvline(x=float(x_vals[interval12_left]), color="black", linestyle="--", linewidth=1)
@@ -94,23 +94,23 @@ def plot_clade_curves(x, real_curves, shuffled_curves, clade_name, save_path):
         # ax.axvline(x=float(x_vals[interval31_left]), color="black", linestyle="--", linewidth=1)
         # ax.axvline(x=float(x_vals[interval31_right]), color="black", linestyle="--", linewidth=1)
         ax.axvspan(x_vals[interval13_left], x_vals[interval13_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval12_left], x_vals[interval12_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval11_left], x_vals[interval11_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval21_left], x_vals[interval21_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval31_left], x_vals[interval31_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
 
-    axs[0].set_title(f"{clade_name} - Real curves")
-    axs[1].set_title(f"{clade_name} - Shuffled curves")
+    axs[0].set_title(f"{clade_name} - Observed")
+    axs[1].set_title(f"{clade_name} - Expected")
     axs[2].set_title(f"{clade_name} - Difference")
 
     for ax in axs:
         ax.set_ylabel("Density")
-        ax.set_xlabel("Diadic interval ratio (DIR)")
+        ax.set_xlabel("Dyadic interval ratio (DIR)")
         ax.set_ylim((0, 40))
     axs[2].set_ylim((-20, 20))
 
@@ -376,11 +376,11 @@ def plot_music_auc_curves(syllable_csv, n_iter):
         print(DIR_13, DIR_12, DIR_11, DIR_21, DIR_31)
         print(interval13_left, interval13_right, interval12_left, interval12_right, interval11_left, interval11_right,
               interval21_left, interval21_right, interval31_left, interval31_right)
-        #ax.axvline(x=float(x_vals[DIR_13]), color="black", linewidth=1, label="1:3")
-        #ax.axvline(x=float(x_vals[DIR_12]), color="black", linewidth=1, label="1:2")
-        #ax.axvline(x=float(x_vals[DIR_11]), color="black", linewidth=1, label="1:1")
-        #ax.axvline(x=float(x_vals[DIR_21]), color="black", linewidth=1, label="2:1")
-        # #ax.axvline(x=float(x_vals[DIR_31]), color="black", linewidth=1, label="3:1")
+        ax.axvline(x=float(x_vals[DIR_13]), color="black", linestyle="--", linewidth=1, label="1:3")
+        ax.axvline(x=float(x_vals[DIR_12]), color="black", linestyle="--", linewidth=1, label="1:2")
+        ax.axvline(x=float(x_vals[DIR_11]), color="black", linestyle="--", linewidth=1, label="1:1")
+        ax.axvline(x=float(x_vals[DIR_21]), color="black", linestyle="--", linewidth=1, label="2:1")
+        ax.axvline(x=float(x_vals[DIR_31]), color="black", linestyle="--", linewidth=1, label="3:1")
         # ax.axvline(x=float(x_vals[interval13_left]), color="black", linestyle="--", linewidth=1)
         # ax.axvline(x=float(x_vals[interval13_right]), color="black", linestyle="--", linewidth=1)
         # ax.axvline(x=float(x_vals[interval12_left]), color="black", linestyle="--", linewidth=1)
@@ -392,23 +392,23 @@ def plot_music_auc_curves(syllable_csv, n_iter):
         # ax.axvline(x=float(x_vals[interval31_left]), color="black", linestyle="--", linewidth=1)
         # ax.axvline(x=float(x_vals[interval31_right]), color="black", linestyle="--", linewidth=1)
         ax.axvspan(x_vals[interval13_left], x_vals[interval13_right],
-                   facecolor = "0.2", alpha = 0.08, linewidth=0, zorder=0)
+                   facecolor = "0.2", alpha = 0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval12_left], x_vals[interval12_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0,zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0,zorder=0)
         ax.axvspan(x_vals[interval11_left], x_vals[interval11_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval21_left], x_vals[interval21_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
         ax.axvspan(x_vals[interval31_left], x_vals[interval31_right],
-                   facecolor="0.2", alpha=0.08, linewidth=0, zorder=0)
+                   facecolor="0.2", alpha=0.15, linewidth=0, zorder=0)
 
-    axs[0].set_title("Music Real curves")
-    axs[1].set_title("Music Mean shuffled curves")
-    axs[2].set_title("Difference between real and shuffled")
+    axs[0].set_title("Music - Observed")
+    axs[1].set_title("Music - Expected")
+    axs[2].set_title("Music - Differences")
 
     for ax in axs:
         ax.set_ylabel("Density")
-        ax.set_xlabel("Diadic interval ratio (DIR)")
+        ax.set_xlabel("Dyadic interval ratio (DIR)")
         ax.set_ylim((0, 40))
     axs[2].set_ylim((-20, 20))
     plt.tight_layout()
